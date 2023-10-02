@@ -5,7 +5,7 @@ import { TodoType } from "@/types";
 
 async function getTodoData() {
   const res = await fetch(`${process.env.API_URL}/todos`, {
-    next: { revalidate: 15 },
+    next: { revalidate: 0 },
   });
 
   if (!res.ok) {
@@ -17,7 +17,10 @@ async function getTodoData() {
   return fetchData.documents;
 }
 
-export const Revalidate15 = async () => {
+export const Revalidate0 = async () => {
+  // 処理を2秒待機
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+
   const todoData = await getTodoData();
 
   const todosRegex = /todos\/([^/]+)/;
@@ -36,7 +39,7 @@ export const Revalidate15 = async () => {
 
   return (
     <div className="w-1/2 border rounded-sm p-8">
-      <h3 className="text-xl mb-4">Revalidate 15</h3>
+      <h3 className="text-xl mb-4">Revalidate 0</h3>
       <div className="flex flex-col gap-y-2">
         {todos.map((item: any) => (
           <div key={item.id} className="flex items-center">

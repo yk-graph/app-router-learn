@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { clsx } from "clsx";
 import moment from "moment";
 
@@ -7,9 +8,10 @@ import { TodoType } from "@/types";
 // Return a list of `params` to populate the [slug] dynamic segment
 export async function generateStaticParams() {
   const fetchData = await fetch(`${process.env.API_URL}/todos`).then((res) => {
-    if (!res.ok) {
-      throw new Error("Failed to fetch data");
-    }
+    // [Tips]一番初めにここでエラーを拾ってしまうため、NotFoundに遷移させたいのであればここのエラーハンドリングは不要
+    // if (!res.ok) {
+    //   throw new Error("Failed to fetch data");
+    // }
 
     return res.json();
   });
@@ -27,10 +29,6 @@ export async function generateStaticParams() {
 async function getTodo(id: string) {
   const res = await fetch(`${process.env.API_URL}/todos/${id}`);
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-
   const fetchData: TodoType = await res.json();
   return fetchData;
 }
@@ -41,6 +39,10 @@ export default async function SsgDetailPage({
   params: { id: string };
 }) {
   const todoData = await getTodo(params.id);
+
+  if (!todoData.fields) {
+    return notFound();
+  }
 
   const todo = {
     task: todoData.fields.task.stringValue,

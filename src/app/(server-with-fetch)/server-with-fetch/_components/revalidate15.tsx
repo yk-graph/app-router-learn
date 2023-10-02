@@ -1,12 +1,12 @@
+import Link from "next/link";
 import { clsx } from "clsx";
 
 import { TodoType } from "@/types";
 
 async function getTodoData() {
-  // 処理を1秒待機
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  const res = await fetch(`${process.env.API_URL}/todos`);
+  const res = await fetch(`${process.env.API_URL}/todos`, {
+    next: { revalidate: 15 },
+  });
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
@@ -17,7 +17,10 @@ async function getTodoData() {
   return fetchData.documents;
 }
 
-export const ForceCache = async () => {
+export const Revalidate15 = async () => {
+  // 処理を5秒待機
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+
   const todoData = await getTodoData();
 
   const todosRegex = /todos\/([^/]+)/;
@@ -35,8 +38,8 @@ export const ForceCache = async () => {
   });
 
   return (
-    <div className="border rounded-sm p-8">
-      <h2 className="text-xl mb-4">ForceCache</h2>
+    <div className="w-1/2 border rounded-sm p-8">
+      <h3 className="text-xl mb-4">Revalidate 15</h3>
       <div className="flex flex-col gap-y-2">
         {todos.map((item: any) => (
           <div key={item.id} className="flex items-center">
@@ -48,8 +51,9 @@ export const ForceCache = async () => {
             >
               Done
             </p>
-            <p className="mr-auto">{item.id}</p>
-            <p>{item.task}</p>
+            <Link href={`/server-with-fetch/revalidate/${item.id}`}>
+              {item.task}
+            </Link>
           </div>
         ))}
       </div>
