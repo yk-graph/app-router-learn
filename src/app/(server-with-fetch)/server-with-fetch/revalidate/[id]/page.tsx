@@ -7,7 +7,7 @@ import { TodoType } from "@/types";
 
 async function getTodo(id: string) {
   const res = await fetch(`${process.env.API_URL}/todos/${id}`, {
-    next: { revalidate: 20 },
+    next: { revalidate: 5 },
   });
 
   // [Tips]一番初めにここでエラーを拾ってしまうため、NotFoundに遷移させたいのであればここのエラーハンドリングは不要
@@ -43,7 +43,7 @@ export default async function RevalidateDetailPage({
     <div className="p-8 w-2/3 mx-auto">
       <h2 className="text-xl mb-2">Revalidate - Dynamic Route</h2>
       <p className="text-neutral-500 mb-2">
-        このページではTime-based-revalidationを使って、20秒指定でデータを再検証している
+        このページではTime-based-revalidationを使って、5秒指定でデータを再検証している
         <br />
         何も指定しない場合はSSRとして扱われるため、ブラウザのリロードするたびにデータが再取得される
       </p>

@@ -4,10 +4,10 @@ import { clsx } from "clsx";
 import { TodoType } from "@/types";
 
 async function getTodoData() {
-  // const res = await fetch(`${process.env.API_URL}/todos`, {
-  //   next: { revalidate: 10 },
-  // });
-  const res = await fetch(`${process.env.API_URL}/todos`);
+  const res = await fetch(`${process.env.API_URL}/todos`, {
+    next: { revalidate: 0 },
+  });
+  // const res = await fetch(`${process.env.API_URL}/todos`);
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
